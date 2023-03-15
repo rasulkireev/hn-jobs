@@ -11,21 +11,17 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 import environ
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False),
 )
-environ.Env.read_env()
 
-ENVIRONMENT = env("ENV")
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
+ENVIRONMENT = env("ENVIRONMENT")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -33,6 +29,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-a7&5bd(i0z*e!2o1up_!jhdxqxe(%ygs)7i+vc*$4o+9zogu%3'
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+
+DEBUG = env('DEBUG')
 
 # Application definition
 
@@ -48,8 +46,13 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "django_q",
+    "django_filters",
+    "djstripe",
+    "anymail",
     "pages.apps.PagesConfig",
     "users.apps.UsersConfig",
+    "profiles.apps.ProfilesConfig",
 ]
 
 MIDDLEWARE = [
@@ -125,11 +128,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR.joinpath("media/")
+
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR.joinpath("static/")
 
 STATICFILES_DIRS = [
     BASE_DIR.joinpath("frontend/build"),
 ]
+
 
 WEBPACK_LOADER = {
     "MANIFEST_FILE": BASE_DIR.joinpath("frontend/build/manifest.json"),
@@ -164,3 +173,55 @@ ACCOUNT_FORMS = {
   'signup': 'users.forms.CustomSignUpForm',
   'login': 'users.forms.CustomLoginForm',
 }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "root": {"level": "INFO", "handlers": ["console"]},
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "app",
+            "level": "INFO",
+        },
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "INFO", "propagate": True},
+    },
+    "formatters": {
+        "app": {
+            "format": ("%(asctime)s [%(levelname)-8s] " "(%(module)s.%(funcName)s) %(message)s"),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+}
+
+
+# django-q
+Q_CLUSTER = {
+    "name": "hackernews_developers-q",
+    "orm": "default",
+    "timeout": 90,
+    "retry": 120,
+    "workers": 4,
+    "max_attempts": 2,
+}
+
+OPENAI_KEY = env("OPENAI_KEY")
+
+STRIPE_LIVE_SECRET_KEY = env("STRIPE_LIVE_SECRET_KEY")
+STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY")
+STRIPE_LIVE_MODE = env('STRIPE_LIVE_MODE', bool)
+DJSTRIPE_USE_NATIVE_JSONFIELD = True
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+DJSTRIPE_WEBHOOK_VALIDATION='retrieve_event'
+
+ANYMAIL = {
+    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
+    "MAILGUN_SENDER_DOMAIN": "mg.builtwithdjango.com",
+}
+
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
