@@ -6,7 +6,6 @@ authors = ["Rasul Kireev <me@rasulkireev.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = "^4.0.4"
 django-allauth = "^0.50.0"
 python-webpack-boilerplate = "^1.0.0"
 django-widget-tweaks = "^1.4.12"
@@ -26,6 +25,8 @@ django-filter = "^22.1"
 django-anymail = {extras = ["mailgun"], version = "^9.1"}
 pygments = "^2.14.0"
 dj-stripe = "^2.7.3"
+whitenoise = "^6.4.0"
+django = "^4.1.7"
 
 [tool.poetry.dev-dependencies]
 
