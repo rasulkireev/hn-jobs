@@ -28,7 +28,7 @@ ENVIRONMENT = env("ENVIRONMENT")
 SECRET_KEY = env("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = ["https://hnprofiles.com", "https://www.hnprofiles.com", "https://hn-profiles.cr.rasulkireev.com"]
 
 DEBUG = env('DEBUG')
 
