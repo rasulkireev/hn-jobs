@@ -1,7 +1,7 @@
 import logging
 
 from django.views.generic import DetailView, FormView
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django import forms
 from django.urls import reverse_lazy
 from django_q.tasks import async_task, result
@@ -53,11 +53,14 @@ class ProfileDetailView(DetailView):
 class GenericForm(forms.Form):
     who_wants_to_be_hired_post_id = forms.CharField()
 
-@user_passes_test(lambda user: user.is_staff)
-class TriggerAsyncTask(FormView):
+class TriggerAsyncTask(LoginRequiredMixin, UserPassesTestMixin, FormView):
+    login_url = "account_login"
     success_url = reverse_lazy("home")
     template_name = "profiles/trigger_task.html"
     form_class = GenericForm
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def form_valid(self, form):
         who_wants_to_be_hired_post_id = form.cleaned_data.get('who_wants_to_be_hired_post_id')
