@@ -19,4 +19,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 80
 
-CMD ["supervisord", "-c", "deployments/supervisord.conf"]
+CMD ["deployment/entrypoint.sh"]
