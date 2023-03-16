@@ -19,7 +19,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        context["profiles"] = Profile.objects.all()[:8]
+        context["profiles"] = Profile.objects.all().order_by("-created")[:8]
         context["num_of_profiles"] = floor_to_tens(len(Profile.objects.all()))
 
         if user.is_authenticated:
