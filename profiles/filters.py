@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters import FilterSet, AllValuesMultipleFilter, ModelMultipleChoiceFilter, CharFilter, NumberFilter, MultipleChoiceFilter
 from django import forms
 
