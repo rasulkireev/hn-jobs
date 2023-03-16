@@ -61,6 +61,7 @@
     "@hotwired/turbo": "^7.3.0",
     "bootstrap": "^5.1.3",
     "core-js": "^3.20.3",
+    "cssnano": "^5.1.15",
     "el-transition": "^0.0.7",
     "stimulus-dropdown": "^2.1.0",
     "stimulus-reveal-controller": "^4.1.0"
