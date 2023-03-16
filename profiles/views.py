@@ -1,6 +1,7 @@
 import logging
 
 from django.views.generic import DetailView, FormView
+from django.contrib.auth.decorators import user_passes_test
 from django import forms
 from django.urls import reverse_lazy
 from django_q.tasks import async_task, result
@@ -51,6 +52,8 @@ class ProfileDetailView(DetailView):
 
 class GenericForm(forms.Form):
     who_wants_to_be_hired_post_id = forms.CharField()
+
+@user_passes_test(lambda user: user.is_staff)
 class TriggerAsyncTask(FormView):
     success_url = reverse_lazy("home")
     template_name = "profiles/trigger_task.html"
