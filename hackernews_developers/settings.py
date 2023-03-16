@@ -26,6 +26,7 @@ ENVIRONMENT = env("ENVIRONMENT")
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 SECRET_KEY = env("SECRET_KEY")
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
