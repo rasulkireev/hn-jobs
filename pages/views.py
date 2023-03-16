@@ -8,7 +8,7 @@ from .forms import SupportForm
 from .tasks import email_support_request
 
 from profiles.models import Profile
-from hackernews_developers.utils import add_users_context
+from hackernews_developers.utils import floor_to_tens, add_users_context
 
 logger = logging.getLogger(__file__)
 
@@ -20,6 +20,7 @@ class HomeView(TemplateView):
         user = self.request.user
 
         context["profiles"] = Profile.objects.all()[:8]
+        context["num_of_profiles"] = floor_to_tens(len(Profile.objects.all()))
 
         if user.is_authenticated:
           add_users_context(context, user)
