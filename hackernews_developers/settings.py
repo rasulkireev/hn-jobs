@@ -221,8 +221,10 @@ DJSTRIPE_WEBHOOK_VALIDATION='retrieve_event'
 
 ANYMAIL = {
     "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": "mg.builtwithdjango.com",
+    "MAILGUN_SENDER_DOMAIN": "mg.hnprofiles.com",
 }
+DEFAULT_FROM_EMAIL = "rasul@hnprofiles.com"
+SERVER_EMAIL = "error@hnprofiles.com"
 
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
