@@ -3,35 +3,36 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-      <!-- Required meta tags -->
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <!-- Other meta stuff -->
-      <link rel="apple-touch-icon" href="{% static 'vendors/favicon/logo.png' %}" />
-      <link rel="apple-touch-icon" href="{% static 'vendors/favicon/logo.png' %}" />
-      <link rel="icon" type="image/png" sizes="16x16 32x32 500x500" href="{% static 'vendors/favicon/logo.png' %}"/>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Other meta stuff -->
+  <link rel="apple-touch-icon" href="{% static 'vendors/favicon/logo.png' %}" />
+  <link rel="apple-touch-icon" href="{% static 'vendors/favicon/logo.png' %}" />
+  <link rel="icon" type="image/png" sizes="16x16 32x32 500x500" href="{% static 'vendors/favicon/logo.png' %}"/>
 
-      {% block meta %}
-      <title>HN Profiles</title>
-      <meta name="description" content="Searchable Database of HN users **Who Want to be Hired**."/>
-      <link rel="canonical" href="https://{{ request.get_host }}/" />
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="HN Profiles" />
-          <meta property="og:url" content="https://{{ request.get_host }}/" />
-          <meta property="og:description" content="Searchable Database of HN users **Who Want to be Hired**."/>
-          <meta property="og:image" content="https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}" />
-          <meta name="twitter:card" content="summary" />
-          <meta name="twitter:creator" content="@rasulkireev" />
-          <meta name="twitter:site" content="@rasulkireev" />
-          <meta name="twitter:title" content="HN Profiles" />
-          <meta name="twitter:description" content="Searchable Database of HN users **Who Want to be Hired**."/>
-          <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}" />
-      {% endblock meta %}
-
+  {% block meta %}
+  <title>HN Profiles</title>
+  <meta name="description" content="Searchable Database of HN users **Who Want to be Hired**."/>
+  <link rel="canonical" href="https://{{ request.get_host }}/" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="HN Profiles" />
+      <meta property="og:url" content="https://{{ request.get_host }}/" />
+      <meta property="og:description" content="Searchable Database of HN users **Who Want to be Hired**."/>
+      <meta property="og:image" content="https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:creator" content="@rasulkireev" />
+      <meta name="twitter:site" content="@rasulkireev" />
+      <meta name="twitter:title" content="HN Profiles" />
+      <meta name="twitter:description" content="Searchable Database of HN users **Who Want to be Hired**."/>
+      <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}" />
+  {% endblock meta %}
 
   {% stylesheet_pack 'index' %}
   {% javascript_pack 'index' attrs='defer' %}
+
+  <script defer data-domain="hnprofiles.com" src="https://plausible.io/js/script.js"></script>
 
 </head>
 <body>
