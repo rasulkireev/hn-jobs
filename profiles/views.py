@@ -6,6 +6,7 @@ from django import forms
 from django.urls import reverse_lazy
 from django_q.tasks import async_task, result
 from django_filters.views import FilterView
+from django.core.paginator import Paginator
 
 from .models import Profile
 from .tasks import analyze_hn_page
