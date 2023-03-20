@@ -23,7 +23,7 @@ def check_that_level_is_one_the_allowed_values(level: str) -> bool:
         return ""
 
 def if_value_is_unknown_return_empty_string(value: str) -> str:
-    if value in ["Unknown", "unknown", "empty"]:
+    if value in ["Unknown", "unknown", "empty", "not specified"]:
         return ""
     else:
         return value

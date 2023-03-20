@@ -4,10 +4,26 @@ from django import forms
 
 from .models import Profile, Technology
 
+class FrequencyOrderedAllValuesMultipleFilter(AllValuesMultipleFilter):
+    def field_choices(self, *args, **kwargs):
+        queryset = self.model._default_manager.distinct().order_by(self.field_name).values_list(self.field_name, flat=True)
+        lst = list(queryset)
+        # Count the frequency of each value and sort the choices by frequency in descending order
+        choices = sorted(
+            self.extra['choices_form_class'](list(enumerate(lst))),
+            key=lambda x: -lst.count(x[0])
+        )
+        return choices
+
 class ProfileFilter(FilterSet):
     title = CharFilter(lookup_expr='icontains')
     description = CharFilter(lookup_expr='icontains')
-    location = CharFilter(lookup_expr='icontains')
+
+    # location = CharFilter(lookup_expr='icontains')
+    city = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
+    state = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
+    country = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
+
     level = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
     technologies_used = ModelMultipleChoiceFilter(
         queryset=Technology.objects.annotate(profile_count=Count('profile')).filter(profile_count__gt=10).order_by('-profile_count'),
