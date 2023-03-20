@@ -9,6 +9,7 @@ from django_q.models import Schedule
 import openai
 
 from .models import Profile, Technology
+from .utils import clean_profile_json_object
 
 logger = logging.getLogger(__file__)
 openai.api_key = settings.OPENAI_KEY
@@ -23,7 +24,7 @@ def analyze_hn_page(who_wants_to_be_hired_post_id):
 
     # if working in dev don't want to go through all the comments
     if settings.DEBUG:
-        list_of_comment_ids = list_of_comment_ids[:10]
+        list_of_comment_ids = list_of_comment_ids[:150]
 
     for comment_id in list_of_comment_ids:
         if not Profile.objects.filter(who_wants_to_be_hired_comment_id=comment_id).exists():
@@ -83,9 +84,11 @@ def analyze_hn_page(who_wants_to_be_hired_post_id):
             converted_comment_response = completion.choices[0].message
             json_converted_comment_response = json.loads(converted_comment_response.content)
 
+            cleaned_data = clean_profile_json_object(json_profile, json_converted_comment_response)
+
             # Create Technology Objects
             with transaction.atomic():
-                technology_names = [name.strip() for name in json_converted_comment_response['technologies_used'].split(',')]
+                technology_names = [name.strip() for name in cleaned_data['technologies_used'].split(',')]
 
                 technologies = []
                 for name in technology_names:
@@ -101,22 +104,22 @@ def analyze_hn_page(who_wants_to_be_hired_post_id):
                 latest_who_wants_to_be_hired_id=who_wants_to_be_hired_id,
                 who_wants_to_be_hired_title=who_wants_to_be_hired_title,
                 who_wants_to_be_hired_comment_id=who_wants_to_be_hired_comment_id,
-                title=json_converted_comment_response['title'],
-                name=json_converted_comment_response['name'],
+                title=cleaned_data['title'],
+                name=cleaned_data['name'],
                 hn_username=hn_username,
-                description=json_converted_comment_response['description'],
-                location=json_converted_comment_response['location'],
-                city=json_converted_comment_response['city'],
-                country=json_converted_comment_response['country'],
-                state=json_converted_comment_response['state'],
-                level=json_converted_comment_response['level'],
-                is_remote=json_converted_comment_response['is_remote'],
-                willing_to_relocate=json_converted_comment_response['willing_to_relocate'],
-                resume_link=json_converted_comment_response['resume_link'],
-                personal_website=json_converted_comment_response['personal_website'],
-                email=json_converted_comment_response['email'],
-                years_of_experience=json_converted_comment_response['years_of_experience'],
-                capacity=json_converted_comment_response['capacity'],
+                description=cleaned_data['description'],
+                location=cleaned_data['location'],
+                city=cleaned_data['city'],
+                country=cleaned_data['country'],
+                state=cleaned_data['state'],
+                level=cleaned_data['level'],
+                is_remote=cleaned_data['is_remote'],
+                willing_to_relocate=cleaned_data['willing_to_relocate'],
+                resume_link=cleaned_data['resume_link'],
+                personal_website=cleaned_data['personal_website'],
+                email=cleaned_data['email'],
+                years_of_experience=cleaned_data['years_of_experience'],
+                capacity=cleaned_data['capacity'],
             )
             profile.save()
             logger.info(f"Adding techonologies for profile {comment_id}")

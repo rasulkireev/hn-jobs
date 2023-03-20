@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Count
 from django_filters import FilterSet, AllValuesMultipleFilter, ModelMultipleChoiceFilter, CharFilter, NumberFilter, MultipleChoiceFilter
 from django import forms
 
@@ -10,8 +10,9 @@ class ProfileFilter(FilterSet):
     location = CharFilter(lookup_expr='icontains')
     level = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
     technologies_used = ModelMultipleChoiceFilter(
-        queryset=Technology.objects.all().order_by("name"),
-        widget=forms.CheckboxSelectMultiple
+        queryset=Technology.objects.annotate(profile_count=Count('profile')).filter(profile_count__gt=10).order_by('-profile_count'),
+        widget=forms.CheckboxSelectMultiple(),
+        conjoined=True
     )
     who_wants_to_be_hired_title = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
 
