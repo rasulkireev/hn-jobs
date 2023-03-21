@@ -4,11 +4,36 @@ import stripe
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import UpdateView
 
 from djstripe import models, webhooks, settings as djstripe_settings
 
+from .models import CustomUser
+from hackernews_developers.utils import add_users_context
+
 stripe.api_key = djstripe_settings.djstripe_settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__file__)
+
+class UserSettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    login_url = "account_login"
+    model = CustomUser
+    fields = ["name"]
+    success_message = "User Profile Updated"
+    success_url = reverse_lazy("settings")
+    template_name = "account/settings.html"
+
+    def get_object(self):
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        add_users_context(context, user)
+
+        return context
 
 def create_checkout_session(request):
     user = request.user
