@@ -8,7 +8,7 @@ from .forms import SupportForm
 from .tasks import email_support_request
 
 from profiles.models import Profile
-from hackernews_developers.utils import floor_to_thousands, add_users_context
+from hn_jobs.utils import floor_to_thousands, add_users_context
 
 logger = logging.getLogger(__file__)
 

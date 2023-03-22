@@ -6,4 +6,4 @@ python manage.py migrate
 
 python manage.py qcluster &
 
-gunicorn --bind 0.0.0.0:80 --workers 3 hackernews_developers.wsgi:application
+gunicorn --bind 0.0.0.0:80 --workers 3 hn_jobs.wsgi:application

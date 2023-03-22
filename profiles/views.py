@@ -12,7 +12,7 @@ from .models import Profile
 from .tasks import analyze_hn_page
 from .filters import ProfileFilter
 
-from hackernews_developers.utils import floor_to_tens, add_users_context
+from hn_jobs.utils import floor_to_tens, add_users_context
 
 
 logger = logging.getLogger(__file__)

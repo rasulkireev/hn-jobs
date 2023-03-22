@@ -1,5 +1,5 @@
 from allauth.account.forms import SignupForm, LoginForm
-from hackernews_developers.utils import DivErrorList
+from hn_jobs.utils import DivErrorList
 
 class CustomSignUpForm(SignupForm):
     def __init__(self, *args, **kwargs):

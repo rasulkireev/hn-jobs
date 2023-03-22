@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "hackernews_developers"
+name = "hn_jobs"
 version = "0.1.0"
 description = "List of HackerNews Developers"
 authors = ["Rasul Kireev <me@rasulkireev.com>"]

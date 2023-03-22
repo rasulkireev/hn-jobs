@@ -9,9 +9,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import UpdateView
 
 from djstripe import models, webhooks, settings as djstripe_settings
+from allauth.account.utils import send_email_confirmation
 
 from .models import CustomUser
-from hackernews_developers.utils import add_users_context
+from hn_jobs.utils import add_users_context
 
 stripe.api_key = djstripe_settings.djstripe_settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__file__)
@@ -81,3 +82,9 @@ def create_customer_portal_session(request):
     )
 
     return redirect(session.url)
+
+def resend_email_confirmation_email(request):
+    user = request.user
+    send_email_confirmation(request, user, user.email)
+
+    return redirect("settings")

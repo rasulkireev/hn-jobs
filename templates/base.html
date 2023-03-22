@@ -85,8 +85,8 @@
                    aria-orientation="vertical"
                    aria-labelledby="user-menu-button"
                    tabindex="-1">
-                  {% if user.is_authenticated and subscription.status == "active" %}
-                  <a href="{% url 'Settings' %}"
+                  {% if user.is_authenticated %}
+                  <a href="{% url 'settings' %}"
                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
                      role="menuitem"
                      data-action="dropdown#toggle"
@@ -136,7 +136,7 @@
             <div class="-my-6 divide-y divide-gray-500/10">
               <div class="py-6 space-y-2">
                 <a href="{% url 'profiles' %}" class="block px-3 py-2 -mx-3 text-base font-semibold leading-7 text-gray-900 rounded-lg hover:bg-gray-50">Profiles</a>
-                {% if user.is_authenticated and subscription.status == "active" %}
+                {% if user.is_authenticated %}
                   <a href="{% url 'settings' %}" class="block px-3 py-2 -mx-3 text-base font-semibold leading-7 text-gray-900 rounded-lg hover:bg-gray-50">Support</a>
                 {% else %}
                   <a href="{% url 'pricing' %}" class="block px-3 py-2 -mx-3 text-base font-semibold leading-7 text-gray-900 rounded-lg hover:bg-gray-50">Pricing</a>
