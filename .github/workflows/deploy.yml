@@ -36,6 +36,6 @@ jobs:
         uses: caprover/deploy-from-github@main
         with:
             server: ${{ secrets.CAPROVER_SERVER }}
-            app: hn-jobs
+            app: ${{ github.event.repository.name }}
             token: '${{ secrets.APP_TOKEN }}'
             image: ghcr.io/${{ github.repository }}
