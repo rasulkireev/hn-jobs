@@ -50,7 +50,7 @@ def create_checkout_session(request):
             }
         ],
         mode="subscription",
-        success_url=request.build_absolute_uri(reverse_lazy("profiles")) + "?session_id={CHECKOUT_SESSION_ID}",
+        success_url=request.build_absolute_uri(reverse_lazy("jobs")) + "?session_id={CHECKOUT_SESSION_ID}",
         cancel_url=request.build_absolute_uri(reverse_lazy("home")) + "?status=failed",
         customer=customer.id,
         metadata={"price_id": price_id},

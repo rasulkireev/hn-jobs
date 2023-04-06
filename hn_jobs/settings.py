@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "anymail",
     "pages.apps.PagesConfig",
     "users.apps.UsersConfig",
-    "profiles.apps.ProfilesConfig",
+    "jobs.apps.JobsConfig",
 ]
 
 MIDDLEWARE = [
@@ -65,9 +65,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-if DEBUG:
-  MIDDLEWARE.append("kolo.middleware.KoloMiddleware")
 
 ROOT_URLCONF = 'hn_jobs.urls'
 
@@ -222,10 +219,10 @@ DJSTRIPE_WEBHOOK_VALIDATION='retrieve_event'
 
 ANYMAIL = {
     "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": "mg.hnprofiles.com",
+    "MAILGUN_SENDER_DOMAIN": "mg.hn-jobs.com",
 }
-DEFAULT_FROM_EMAIL = "rasul@hnprofiles.com"
-SERVER_EMAIL = "error@hnprofiles.com"
+DEFAULT_FROM_EMAIL = "rasul@hn-jobs.com"
+SERVER_EMAIL = "error@hn-jobs.com"
 
 if DEBUG:
     EMAIL_HOST = "localhost"

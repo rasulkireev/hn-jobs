@@ -13,18 +13,18 @@
   <link rel="icon" type="image/png" sizes="16x16 32x32 500x500" href="{% static 'vendors/favicon/logo.png' %}"/>
 
   {% block meta %}
-  <title>HN Profiles</title>
+  <title>HN Jobs</title>
   <meta name="description" content="Searchable Database of HN users **Who Want to be Hired**."/>
   <link rel="canonical" href="https://{{ request.get_host }}/" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="HN Profiles" />
+      <meta property="og:title" content="HN Jobs" />
       <meta property="og:url" content="https://{{ request.get_host }}/" />
       <meta property="og:description" content="Searchable Database of HN users **Who Want to be Hired**."/>
       <meta property="og:image" content="https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}" />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:creator" content="@rasulkireev" />
       <meta name="twitter:site" content="@rasulkireev" />
-      <meta name="twitter:title" content="HN Profiles" />
+      <meta name="twitter:title" content="HN Jobs" />
       <meta name="twitter:description" content="Searchable Database of HN users **Who Want to be Hired**."/>
       <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}" />
   {% endblock meta %}
@@ -32,7 +32,7 @@
   {% stylesheet_pack 'index' %}
   {% javascript_pack 'index' attrs='defer' %}
 
-  <script defer data-domain="hnprofiles.com" src="https://plausible.rasulkireev.com/js/script.js"></script>
+  <script defer data-domain="hnJobs.com" src="https://plausible.rasulkireev.com/js/script.js"></script>
 
 
 </head>
@@ -46,11 +46,11 @@
       <nav class="flex items-center justify-between p-6 mx-auto max-w-7xl lg:px-8" aria-label="Global">
         <div class="flex items-center gap-x-12">
           <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
-            <span class="sr-only">HN Profiles</span>
-            <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Profiles Logo">
+            <span class="sr-only">HN Jobs</span>
+            <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Jobs Logo">
           </a>
           <div class="hidden lg:flex lg:gap-x-12">
-            <a href="{% url 'profiles' %}" class="text-base font-semibold leading-6 text-gray-900">Profiles</a>
+            <a href="{% url 'posts' %}" class="text-base font-semibold leading-6 text-gray-900">Jobs</a>
             <a href="{% url 'pricing' %}" class="text-base font-semibold leading-6 text-gray-900">Pricing</a>
           </div>
         </div>
@@ -122,8 +122,8 @@
         <div class="fixed inset-y-0 right-0 z-10 w-full px-6 py-6 overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div class="flex items-center justify-between">
             <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
-              <span class="sr-only">HN Profiles</span>
-              <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Profiles Logo">
+              <span class="sr-only">HN Jobs</span>
+              <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Jobs Logo">
             </a>
             <button data-action="dropdown#toggle click@window->dropdown#hide" type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
               <span class="sr-only">Close menu</span>
@@ -135,7 +135,7 @@
           <div class="flow-root mt-6">
             <div class="-my-6 divide-y divide-gray-500/10">
               <div class="py-6 space-y-2">
-                <a href="{% url 'profiles' %}" class="block px-3 py-2 -mx-3 text-base font-semibold leading-7 text-gray-900 rounded-lg hover:bg-gray-50">Profiles</a>
+                <a href="{% url 'posts' %}" class="block px-3 py-2 -mx-3 text-base font-semibold leading-7 text-gray-900 rounded-lg hover:bg-gray-50">Jobs</a>
                 {% if user.is_authenticated %}
                   <a href="{% url 'settings' %}" class="block px-3 py-2 -mx-3 text-base font-semibold leading-7 text-gray-900 rounded-lg hover:bg-gray-50">Support</a>
                 {% else %}
@@ -164,7 +164,7 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "HN Profiles",
+      "name": "HN Jobs",
       "description": "Searchable Database of HN users **Who Want to be Hired**.",
       "thumbnailUrl": "https://{{ request.get_host }}{% static 'vendors/images/logo.png' %}",
       "url": "https://{{ request.get_host }}/",

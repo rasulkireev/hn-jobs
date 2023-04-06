@@ -7,7 +7,7 @@ from django_q.tasks import async_task
 from .forms import SupportForm
 from .tasks import email_support_request
 
-from profiles.models import Profile
+from jobs.models import Post
 from hn_jobs.utils import floor_to_thousands, add_users_context
 
 logger = logging.getLogger(__file__)
@@ -19,8 +19,8 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        context["profiles"] = Profile.objects.exclude(description__isnull=True).exclude(description__exact='').order_by("-created")[:8]
-        context["num_of_profiles"] = floor_to_thousands(len(Profile.objects.all()))
+        context["jobs"] = Post.objects.exclude(description__isnull=True).exclude(description__exact='').order_by("-created")[:8]
+        context["num_of_jobs"] = floor_to_thousands(len(Post.objects.all()))
 
         if user.is_authenticated:
           add_users_context(context, user)

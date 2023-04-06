@@ -24,7 +24,7 @@ urlpatterns = (
         path("users/", include("allauth.urls")),
         path("users/", include("users.urls")),
         path("", include("pages.urls")),
-        path("profiles/", include("profiles.urls")),
+        path("jobs/", include("jobs.urls")),
         path("stripe/", include("djstripe.urls", namespace="djstripe")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
