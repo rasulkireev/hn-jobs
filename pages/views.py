@@ -20,7 +20,7 @@ class HomeView(TemplateView):
         user = self.request.user
 
         context["jobs"] = Post.objects.exclude(description__isnull=True).exclude(description__exact='').order_by("-created")[:8]
-        context["num_of_jobs"] = floor_to_thousands(len(Post.objects.all()))
+        context["num_of_jobs"] = len(Post.objects.all())
 
         if user.is_authenticated:
           add_users_context(context, user)
