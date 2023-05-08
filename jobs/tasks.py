@@ -81,7 +81,12 @@ def analyze_hn_page(who_is_hiring_post_id):
             )
 
             converted_comment_response = completion.choices[0].message
-            json_converted_comment_response = json.loads(converted_comment_response.content)
+
+            try:
+              json_converted_comment_response = json.loads(converted_comment_response.content)
+            except json.decoder.JSONDecodeError:
+              continue
+
 
             cleaned_data = clean_job_json_object(json_job, json_converted_comment_response)
 
