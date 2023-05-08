@@ -31,7 +31,7 @@ class Post(TimeStampedModel):
 
     # Secret
     company = models.ForeignKey('Company', on_delete=models.CASCADE)
-    company_job_application_link = models.URLField(blank=True)
+    company_job_application_link = models.URLField(max_length=350, blank=True)
     names_of_the_contact_person = models.TextField(blank=True)
     emails = models.TextField(blank=True)
 
