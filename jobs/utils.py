@@ -3,7 +3,29 @@ from datetime import datetime
 
 logger = logging.getLogger(__file__)
 
+list_of_expected_keys = [
+    "company_name"
+    "job_titles"
+    "locations"
+    "cities"
+    "countries"
+    "compensation_summary"
+    "is_remote"
+    "remote_timezones"
+    "is_onsite"
+    "capacity"
+    "description"
+    "technologies_used"
+    "company_homepage_link"
+    "emails"
+    "company_job_application_link"
+    "names_of_the_contact_person"
+    "years_of_experience"
+    "levels_of_experience"
+]
+
 def clean_job_json_object(original_comment: dict, nlp_data: dict) -> dict:
+  make_sure_all_keys_exists(nlp_data, list_of_expected_keys)
   nlp_data["years_of_experience"] = check_years_of_experience_value(nlp_data['years_of_experience'], original_comment['text'])
   nlp_data["level"] = check_that_level_is_one_the_allowed_values(nlp_data['level'])
   check_boolean_value(nlp_data["is_remote"])
@@ -47,3 +69,12 @@ def check_boolean_value(boolean_value: any) -> bool:
         return boolean_value
     else:
         return False
+
+def make_sure_all_keys_exists(data: dict, keys: list) -> dict:
+    for key in keys:
+      try:
+        data[key]
+      except KeyError:
+        data[key] = ""
+
+    return data
