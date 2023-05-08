@@ -27,6 +27,7 @@ pygments = "^2.14.0"
 dj-stripe = "^2.7.3"
 whitenoise = "^6.4.0"
 django = "^4.1.7"
+django-ninja = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
 

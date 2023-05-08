@@ -4,9 +4,11 @@ from django.views.generic import DetailView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django import forms
 from django.urls import reverse_lazy
+from django.db.models import Q
 from django_q.tasks import async_task, result
 from django_filters.views import FilterView
 from django.core.paginator import Paginator
+from ninja import NinjaAPI
 
 from .models import Post
 from .tasks import analyze_hn_page
@@ -14,6 +16,7 @@ from .filters import PostFilter
 
 from hn_jobs.utils import floor_to_tens, add_users_context
 
+api = NinjaAPI()
 
 logger = logging.getLogger(__file__)
 
@@ -67,3 +70,9 @@ class TriggerAsyncTask(LoginRequiredMixin, UserPassesTestMixin, FormView):
         who_is_hiring_post_id = form.cleaned_data.get('who_is_hiring_post_id')
         async_task(analyze_hn_page, who_is_hiring_post_id, hook='hooks.print_result')
         return super(TriggerAsyncTask, self).form_valid(form)
+
+
+@api.get("/emails-with-name")
+def emails_with_name(request):
+    Post.objects.filter(Q(emails__isnull=False) | Q(names_of_the_contact_person__isnull=False))
+    return {"result": a + b}
