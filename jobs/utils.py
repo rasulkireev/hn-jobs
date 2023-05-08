@@ -25,7 +25,7 @@ list_of_expected_keys = [
 ]
 
 def clean_job_json_object(original_comment: dict, nlp_data: dict) -> dict:
-  make_sure_all_keys_exists(nlp_data, list_of_expected_keys)
+  nlp_data = make_sure_all_keys_exists(nlp_data, list_of_expected_keys)
 
   nlp_data["years_of_experience"] = check_years_of_experience_value(nlp_data['years_of_experience'], original_comment['text'])
   nlp_data["level"] = check_that_level_is_one_the_allowed_values(nlp_data['level'])
