@@ -3,7 +3,7 @@ from datetime import datetime
 
 logger = logging.getLogger(__file__)
 
-def clean_profile_json_object(original_comment: dict, nlp_data: dict) -> dict:
+def clean_job_json_object(original_comment: dict, nlp_data: dict) -> dict:
   nlp_data["years_of_experience"] = check_years_of_experience_value(nlp_data['years_of_experience'], original_comment['text'])
   nlp_data["level"] = check_that_level_is_one_the_allowed_values(nlp_data['level'])
   check_boolean_value(nlp_data["is_remote"])
