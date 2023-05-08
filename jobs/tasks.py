@@ -105,16 +105,16 @@ def analyze_hn_page(who_is_hiring_post_id):
                     job_titles.append(obj)
 
             if cleaned_data["company_name"] != "":
-                company, _ = Company.objects.get_or_create(name = cleaned_data["company_name"])
-                company.company_homepage_link = cleaned_data["company_homepage_link"]
-                company.emails += cleaned_data["emails"]
-                company.save()
+                company_obj, _ = Company.objects.get_or_create(name = cleaned_data["company_name"])
+                company_obj.company_homepage_link = cleaned_data["company_homepage_link"]
+                company_obj.emails += cleaned_data["emails"]
+                company_obj.save()
 
             post = Post(
                 who_is_hiring_id=who_is_hiring_id,
                 who_is_hiring_title=who_is_hiring_title,
                 who_is_hiring_comment_id=who_is_hiring_comment_id,
-                company=company,
+                company=company_obj,
                 hn_username=hn_username,
                 description=cleaned_data['description'],
                 locations=cleaned_data['locations'],
