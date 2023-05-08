@@ -39,6 +39,7 @@ def analyze_hn_page(who_is_hiring_post_id):
             who_is_hiring_comment_id = int(json_job['id'])
             hn_username = str(json_job['by'])
 
+            logger.info(f"JSON for comment {comment_id}: {json_job}")
             request = f"""Convert the following text:
                 ```
                 {json_job['text']}
