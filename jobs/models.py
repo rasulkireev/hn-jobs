@@ -13,10 +13,10 @@ class Post(TimeStampedModel):
     who_is_hiring_comment_id = models.IntegerField()
     hn_username = models.CharField(max_length=50, blank=True)
 
-    job_titles = models.ManyToManyField("Title", related_name="job", blank=True)
+    jobs = models.ManyToManyField("Title", related_name="post", blank=True, through="PostTitle")
     description = models.TextField(blank=True)
     levels_of_experience = models.TextField(blank=True)
-    technologies_used = models.ManyToManyField("Technology", related_name="job", blank=True)
+    technologies = models.ManyToManyField("Technology", related_name="post", blank=True, through="PostTechnology")
     capacity = models.TextField(blank=True)
     compensation_summary = models.TextField(blank=True, null=True)
     years_of_experience = models.TextField(blank=True)
@@ -34,6 +34,10 @@ class Post(TimeStampedModel):
     company_job_application_link = models.URLField(blank=True)
     names_of_the_contact_person = models.TextField(blank=True)
     emails = models.TextField(blank=True)
+
+    # To Remove
+    technologies_used = models.ManyToManyField("Technology", related_name="job", blank=True)
+    job_titles = models.ManyToManyField("Title", related_name="job", blank=True)
 
     def get_absolute_url(self):
         return reverse("job", kwargs={"pk": self.id})
@@ -55,3 +59,14 @@ class Company(TimeStampedModel):
     company_homepage_link = models.URLField(blank=True)
     slug = AutoSlugField(populate_from="name", always_update=True)
     emails = models.TextField(blank=True)
+
+
+class PostTitle(TimeStampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+
+class PostTechnology(TimeStampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    technology = models.ForeignKey(Technology, on_delete=models.CASCADE)
