@@ -70,16 +70,24 @@ def analyze_hn_page(who_is_hiring_post_id):
                 Don't add any text and only respond with a JSON Object.
             """
 
-            completion = openai.ChatCompletion.create(
-              model="gpt-3.5-turbo",
-              messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {
-                    "role": "user",
-                    "content": request
-                }
-              ]
-            )
+            max_attempts = 3
+            attempts = 0
+            while attempts < max_attempts:
+                try:
+                  completion = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                      {"role": "system", "content": "You are a helpful assistant."},
+                      {
+                          "role": "user",
+                          "content": request
+                      }
+                    ]
+                  )
+                except openai.error.RateLimitError:
+                  attempts += 1
+                  if attempts == max_attempts:
+                      continue
 
             converted_comment_response = completion.choices[0].message
 
