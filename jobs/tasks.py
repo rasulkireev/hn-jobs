@@ -3,7 +3,6 @@ import json
 import httpx
 import logging
 from django.conf import settings
-from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django_q.models import Schedule
 import openai
@@ -33,15 +32,12 @@ def analyze_hn_page(who_is_hiring_post_id):
 
             try:
               if json_job["deleted"] == True:
-                  logger.info(f"Comment {comment_id} is deleted.")
                   continue
             except KeyError:
-                  logger.info(f"Comment {comment_id} is not deleted.")
+                  pass
 
-            logger.info(f"JSON for comment {comment_id}: {json_job}")
             who_is_hiring_comment_id = int(json_job['id'])
             hn_username = str(json_job['by'])
-
 
             request = f"""Convert the following text:
                 ```
@@ -89,44 +85,24 @@ def analyze_hn_page(who_is_hiring_post_id):
 
             cleaned_data = clean_job_json_object(json_job, json_converted_comment_response)
 
-            # Create Technology Objects
-            with transaction.atomic():
-                technology_names = [name.strip() for name in cleaned_data['technologies_used'].split(',')]
-                technologies = []
-                for name in technology_names:
-                    try:
-                        technology = Technology.objects.get(name=name)
-                        logger.info(f"Tech {name} exists")
-                    except ObjectDoesNotExist:
-                        technology = Technology.objects.create(name=name)
-                        logger.info(f"Create tech entry for {name}")
-                    technologies.append(technology)
+            technology_names = [name.strip() for name in cleaned_data['technologies_used'].split(',')]
+            technologies = []
+            for name in technology_names:
+                if name != "":
+                    obj, _ = Technology.objects.get_or_create(name=name)
+                    technologies.append(obj)
 
-            # Create Job Title Objects
-            with transaction.atomic():
-                job_title_names = [name.strip() for name in cleaned_data['job_titles'].split(',')]
-                job_titles = []
-                for job_title in job_title_names:
-                    try:
-                        title = Title.objects.get(name=job_title)
-                        logger.info(f"Job Title {job_title} exists")
-                    except ObjectDoesNotExist:
-                        title = Title.objects.create(name=job_title)
-                        logger.info(f"Create job title entry for {job_title}")
-                    job_titles.append(title)
+            job_title_names = [name.strip() for name in cleaned_data['job_titles'].split(',')]
+            job_titles = []
+            for job_title in job_title_names:
+                if job_title != "":
+                    obj, _ = Title.objects.get_or_create(name=job_title)
+                    job_titles.append(obj)
 
-            # Create Company Object
-            with transaction.atomic():
-                try:
-                    company = Company.objects.get(name = cleaned_data["company_name"])
-                    logger.info(f"Company {company} exists")
-                except (ObjectDoesNotExist, Company.DoesNotExist):
-                    company = Company.objects.create(name = cleaned_data["company_name"])
-                    logger.info(f"Create Company entry for {company}")
-
+            if cleaned_data["company_name"] != "":
+                company, _ = Company.objects.get_or_create(name = cleaned_data["company_name"])
                 company.company_homepage_link = cleaned_data["company_homepage_link"]
                 company.emails += cleaned_data["emails"]
-
                 company.save()
 
             post = Post(
@@ -151,8 +127,10 @@ def analyze_hn_page(who_is_hiring_post_id):
                 emails=cleaned_data['emails'],
             )
             post.save()
-            post.technologies_used.set(technologies)
-            post.job_titles.set(job_titles)
+            post.technologies_used.add(*technologies)
+            post.job_titles.add(*job_titles)
+
+            logger.info(f"{post} post was created.")
         else:
           logger.info(f"Job for {comment_id} already exists.")
 
