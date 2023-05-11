@@ -1,9 +1,11 @@
 import uuid
+
 from autoslug import AutoSlugField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from django.contrib.postgres.fields import ArrayField
 from model_utils.models import TimeStampedModel
+
 
 class Post(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -30,7 +32,7 @@ class Post(TimeStampedModel):
     remote_timezones = models.TextField(blank=True)
 
     # Secret
-    company = models.ForeignKey('Company', on_delete=models.CASCADE)
+    company = models.ForeignKey("Company", on_delete=models.CASCADE)
     company_job_application_link = models.URLField(max_length=350, blank=True)
     names_of_the_contact_person = models.TextField(blank=True)
     emails = models.TextField(blank=True)
@@ -48,10 +50,12 @@ class Technology(TimeStampedModel):
     name = models.CharField(max_length=256)
     slug = AutoSlugField(populate_from="name", always_update=True)
 
+
 class Title(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
     slug = AutoSlugField(populate_from="name", always_update=True)
+
 
 class Company(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -65,6 +69,7 @@ class PostTitle(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
+
 
 class PostTechnology(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

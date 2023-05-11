@@ -1,21 +1,21 @@
 import logging
 
-from django.views.generic import DetailView, FormView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django import forms
-from django.urls import reverse_lazy
-from django_q.tasks import async_task, result
-from django_filters.views import FilterView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, FormView
+from django_filters.views import FilterView
+from django_q.tasks import async_task, result
 
+from hn_jobs.utils import add_users_context, floor_to_tens
+
+from .filters import PostFilter
 from .models import Post
 from .tasks import analyze_hn_page
-from .filters import PostFilter
-
-from hn_jobs.utils import floor_to_tens, add_users_context
-
 
 logger = logging.getLogger(__file__)
+
 
 class PostListView(FilterView):
     model = Post
@@ -33,6 +33,7 @@ class PostListView(FilterView):
             add_users_context(context, user)
 
         return context
+
 
 # class JobDetailView(DetailView):
 #     model = Job
@@ -54,6 +55,7 @@ class PostListView(FilterView):
 class GenericForm(forms.Form):
     who_is_hiring_post_id = forms.CharField()
 
+
 class TriggerAsyncTask(LoginRequiredMixin, UserPassesTestMixin, FormView):
     login_url = "account_login"
     success_url = reverse_lazy("home")
@@ -64,6 +66,6 @@ class TriggerAsyncTask(LoginRequiredMixin, UserPassesTestMixin, FormView):
         return self.request.user.is_staff
 
     def form_valid(self, form):
-        who_is_hiring_post_id = form.cleaned_data.get('who_is_hiring_post_id')
-        async_task(analyze_hn_page, who_is_hiring_post_id, hook='hooks.print_result')
+        who_is_hiring_post_id = form.cleaned_data.get("who_is_hiring_post_id")
+        async_task(analyze_hn_page, who_is_hiring_post_id, hook="hooks.print_result")
         return super(TriggerAsyncTask, self).form_valid(form)

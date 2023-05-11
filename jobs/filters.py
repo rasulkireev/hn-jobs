@@ -1,23 +1,34 @@
-from django.db.models import Q, Count
-from django_filters import FilterSet, AllValuesMultipleFilter, ModelMultipleChoiceFilter, CharFilter, NumberFilter, MultipleChoiceFilter
 from django import forms
+from django.db.models import Count, Q
+from django_filters import (
+    AllValuesMultipleFilter,
+    CharFilter,
+    FilterSet,
+    ModelMultipleChoiceFilter,
+    MultipleChoiceFilter,
+    NumberFilter,
+)
 
 from .models import Post, Technology
 
+
 class FrequencyOrderedAllValuesMultipleFilter(AllValuesMultipleFilter):
     def field_choices(self, *args, **kwargs):
-        queryset = self.model._default_manager.distinct().order_by(self.field_name).values_list(self.field_name, flat=True)
+        queryset = (
+            self.model._default_manager.distinct().order_by(self.field_name).values_list(self.field_name, flat=True)
+        )
         lst = list(queryset)
         # Count the frequency of each value and sort the choices by frequency in descending order
         choices = sorted(
-            self.extra['choices_form_class'](list(enumerate(lst))),
-            key=lambda x: -lst.count(x[0])
+            self.extra["choices_form_class"](list(enumerate(lst))),
+            key=lambda x: -lst.count(x[0]),
         )
         return choices
 
+
 class PostFilter(FilterSet):
     # title = CharFilter(lookup_expr='icontains')
-    description = CharFilter(lookup_expr='icontains')
+    description = CharFilter(lookup_expr="icontains")
 
     # # location = CharFilter(lookup_expr='icontains')
     # city = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
@@ -51,17 +62,17 @@ class PostFilter(FilterSet):
     class Meta:
         model = Post
         fields = [
-          # "title",
-          "description",
-          # "level",
-          # "is_remote",
-          # "willing_to_relocate",
-          # "years_of_experience",
-          # "technologies_used",
-          # "who_is_hiring_title",
-          # "location",
-          # "city",
-          # "state",
-          # "country",
-          # "capacity"
+            # "title",
+            "description",
+            # "level",
+            # "is_remote",
+            # "willing_to_relocate",
+            # "years_of_experience",
+            # "technologies_used",
+            # "who_is_hiring_title",
+            # "location",
+            # "city",
+            # "state",
+            # "country",
+            # "capacity"
         ]

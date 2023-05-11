@@ -1,21 +1,22 @@
 import logging
-import stripe
 
-from django.urls import reverse_lazy
-from django.shortcuts import redirect
-from django.http import HttpResponse
+import stripe
+from allauth.account.utils import send_email_confirmation
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import UpdateView
+from djstripe import models, settings as djstripe_settings, webhooks
 
-from djstripe import models, webhooks, settings as djstripe_settings
-from allauth.account.utils import send_email_confirmation
+from hn_jobs.utils import add_users_context
 
 from .models import CustomUser
-from hn_jobs.utils import add_users_context
 
 stripe.api_key = djstripe_settings.djstripe_settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__file__)
+
 
 class UserSettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     login_url = "account_login"
@@ -35,6 +36,7 @@ class UserSettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         add_users_context(context, user)
 
         return context
+
 
 def create_checkout_session(request):
     user = request.user
@@ -64,6 +66,7 @@ def create_checkout_session(request):
 
     return redirect(checkout_session.url, code=303)
 
+
 @webhooks.handler("checkout.session.completed")
 def successfull_payment_webhook(event, **kwargs):
     if event.type == "checkout.session.completed":
@@ -82,6 +85,7 @@ def create_customer_portal_session(request):
     )
 
     return redirect(session.url)
+
 
 def resend_email_confirmation_email(request):
     user = request.user

@@ -1,6 +1,11 @@
 from django.urls import path
 
-from .views import create_checkout_session, create_customer_portal_session, UserSettingsView, resend_email_confirmation_email
+from .views import (
+    UserSettingsView,
+    create_checkout_session,
+    create_customer_portal_session,
+    resend_email_confirmation_email,
+)
 
 urlpatterns = [
     path("settings/", UserSettingsView.as_view(), name="settings"),
