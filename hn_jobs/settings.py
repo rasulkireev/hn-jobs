@@ -204,7 +204,6 @@ LOGGING = {
 Q_CLUSTER = {
     "name": "hn_jobs-q",
     "orm": "default",
-    "timeout": 90,
     "retry": 120,
     "workers": 4,
     "max_attempts": 2,
