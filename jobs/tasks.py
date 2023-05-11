@@ -5,8 +5,6 @@ import re
 import httpx
 import openai
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
-from django_q.models import Schedule
 
 from .models import Company, Post, Technology, Title
 from .utils import clean_job_json_object
@@ -33,7 +31,7 @@ def analyze_hn_page(who_is_hiring_post_id):
             json_job = httpx.get(f"https://hacker-news.firebaseio.com/v0/item/{comment_id}.json").json()
 
             try:
-                if json_job["deleted"] == True:
+                if json_job["deleted"] is True:
                     continue
             except KeyError:
                 pass
@@ -67,10 +65,11 @@ def analyze_hn_page(who_is_hiring_post_id):
                 Text: '''
                 {json_job['text']}
                 '''
-            """
+            """  # noqa: E501
 
             max_attempts = 3
             attempts = 0
+            converted_comment_response = None
             while attempts < max_attempts:
                 try:
                     completion = openai.ChatCompletion.create(
@@ -84,12 +83,11 @@ def analyze_hn_page(who_is_hiring_post_id):
                             {"role": "user", "content": request},
                         ],
                     )
+                    converted_comment_response = completion.choices[0].message
                 except openai.error.RateLimitError:
                     attempts += 1
                     if attempts == max_attempts:
                         continue
-
-            converted_comment_response = completion.choices[0].message
 
             try:
                 json_converted_comment_response = json.loads(converted_comment_response.content)
@@ -146,7 +144,7 @@ def analyze_hn_page(who_is_hiring_post_id):
         else:
             logger.info(f"Job for {comment_id} already exists.")
 
-    return f"Task Completed"
+    return "Task Completed"
 
 
 # Schedule.objects.create(
