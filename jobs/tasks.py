@@ -16,6 +16,9 @@ openai.api_key = settings.OPENAI_KEY
 def analyze_hn_page(who_is_hiring_post_id):
     r = httpx.get(f"https://hacker-news.firebaseio.com/v0/item/{who_is_hiring_post_id}.json").json()
 
+    if "Who is hiring" not in r["title"]:
+        return "Not a Who is hiring post"
+
     who_is_hiring_id = int(r["id"])
     who_is_hiring_title = str(re.search("\(([^)]+)", r["title"]).group(1))
 
@@ -46,19 +49,19 @@ def analyze_hn_page(who_is_hiring_post_id):
                 - locations - (string of comma separated values)
                 - cities - (string of comma separated values)
                 - countries - (string of comma separated values)
-                - compensation_summary - (string)
+                - compensation_summary - (string, decribe the salary or other benefits)
                 - is_remote - (boolean)
                 - remote_timezones - (string of comma separated values)
                 - is_onsite - (boolean)
-                - capacity - (string of comma separated values)
+                - capacity - (string of comma separated values, options are 'Part-time Contractor', 'Full-time Contractor', 'Part-time Employee' and 'Full-time Employee', can't be empty)
                 - description
-                - technologies_used - (string of comma separated values)
+                - technologies_used - (string of comma separated values, list of technologies that I might need to know and will use at this jobs)
                 - company_homepage_link - (url link)
                 - emails - (string of comma separated values)
                 - company_job_application_link - (url link)
                 - names_of_the_contact_person - (string of comma separated values)
-                - years_of_experience - (string of comma separated values)
-                - levels_of_experience - (string of comma separated values)
+                - years_of_experience - (string of comma separated values, years of experience required to apply)
+                - levels_of_experience - (choose from these options: Junior, Mid-level, Senior, Principal, C-Level. figure out from description, can't be empty)
 
                 Don't add any text and only respond with a JSON Object.
 
@@ -67,27 +70,22 @@ def analyze_hn_page(who_is_hiring_post_id):
                 '''
             """  # noqa: E501
 
-            max_attempts = 3
-            attempts = 0
-            converted_comment_response = None
-            while attempts < max_attempts:
-                try:
-                    completion = openai.ChatCompletion.create(
-                        model="gpt-3.5-turbo",
-                        temperature=0,
-                        messages=[
-                            {
-                                "role": "system",
-                                "content": "You are a helpful assistant.",
-                            },
-                            {"role": "user", "content": request},
-                        ],
-                    )
-                    converted_comment_response = completion.choices[0].message
-                except openai.error.RateLimitError:
-                    attempts += 1
-                    if attempts == max_attempts:
-                        continue
+            try:
+                completion = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    temperature=0,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are a helpful assistant.",
+                        },
+                        {"role": "user", "content": request},
+                    ],
+                )
+                converted_comment_response = completion.choices[0].message
+            except openai.error.RateLimitError as e:
+                logger.error(e)
+                continue
 
             try:
                 json_converted_comment_response = json.loads(converted_comment_response.content)
@@ -137,8 +135,9 @@ def analyze_hn_page(who_is_hiring_post_id):
                 emails=cleaned_data["emails"],
             )
             post.save()
-            post.technologies_used.add(*technologies)
-            post.job_titles.add(*job_titles)
+
+            post.technologies.add(*technologies)
+            post.jobs.add(*job_titles)
 
             logger.info(f"{post} post was created.")
         else:
