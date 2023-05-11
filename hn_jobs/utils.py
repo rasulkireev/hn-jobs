@@ -1,9 +1,9 @@
-import math
-from django.forms.utils import ErrorList
-from django.db.utils import IntegrityError
 import logging
+import math
 
 from allauth.account.models import EmailAddress
+from django.db.utils import IntegrityError
+from django.forms.utils import ErrorList
 from djstripe.models import Customer, Subscription
 
 logger = logging.getLogger(__file__)
@@ -38,8 +38,10 @@ def add_users_context(context, user):
 def floor_to_thousands(x):
     return int(math.floor(x / 1000.0)) * 1000
 
+
 def floor_to_tens(x):
     return int(math.floor(x / 10.0)) * 10
+
 
 class DivErrorList(ErrorList):
     def __str__(self):
