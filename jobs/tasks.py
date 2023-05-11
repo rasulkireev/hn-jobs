@@ -83,7 +83,7 @@ def analyze_hn_page(who_is_hiring_post_id):
                     ],
                 )
                 converted_comment_response = completion.choices[0].message
-            except openai.error.RateLimitError as e:
+            except (openai.error.RateLimitError, openai.error.APIError) as e:
                 logger.error(e)
                 continue
 
