@@ -25,7 +25,7 @@ def companies(request):
 
 @api.get("/create-emails")
 def create_emails(request):
-    async_task(create_valid_emails)
+    async_task(create_valid_emails)  # noqa: F821
     return "Task Started"
 
 
