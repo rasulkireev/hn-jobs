@@ -1,17 +1,26 @@
 import logging
 from typing import List
 
+from django.conf import settings
 from django_q.tasks import async_task
 from ninja import NinjaAPI, Query
+from ninja.security import HttpBearer
 
 from jobs.models import Company, Email
 from jobs.tasks import create_valid_emails
 
-from .schemas import ReadCompany, ReadEmail
+from .schemas import ReadCompany, ReadEmails
 
 logger = logging.getLogger(__file__)
 
-api = NinjaAPI()
+
+class GlobalAuth(HttpBearer):
+    def authenticate(self, request, token):
+        if token == settings.API_TOKEN:
+            return token
+
+
+api = NinjaAPI(auth=GlobalAuth())
 
 
 @api.get("/companies", response=List[ReadCompany])
@@ -29,8 +38,14 @@ def create_emails(request):
     return "Task Started"
 
 
-@api.get("/emails", response=List[ReadEmail])
-def get_emails(request, is_valid: bool = True, with_names_only: bool = Query(False, alias="names")):
+@api.get("/emails", response=ReadEmails)
+def get_emails(
+    request,
+    is_valid: bool = True,
+    with_names_only: bool = Query(False, alias="names"),
+    exclude_generic_email: bool = Query(True, alias="exclude-generic"),
+    only_approved: bool = Query(False, alias="only-approved"),
+):
     emails = (
         Email.objects.select_related("company")
         .filter(email_is_valid=is_valid)
@@ -40,4 +55,13 @@ def get_emails(request, is_valid: bool = True, with_names_only: bool = Query(Fal
     if with_names_only:
         emails = emails.exclude(name="")
 
-    return emails
+    if exclude_generic_email:
+        emails = emails.exclude(email_is_generic=True)
+
+    if only_approved:
+        emails = emails.filter(is_approved=True)
+
+    return {
+        "count": len(emails),
+        "emails": list(emails),
+    }

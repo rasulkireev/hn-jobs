@@ -73,6 +73,7 @@ class Email(TimeStampedModel):
     name = models.CharField(max_length=256)
     company = models.ForeignKey("Company", related_name="email", on_delete=models.CASCADE)
     post = models.ForeignKey("Post", related_name="email", on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
 
 
 class PostTitle(TimeStampedModel):

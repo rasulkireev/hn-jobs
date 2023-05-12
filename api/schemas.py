@@ -1,3 +1,5 @@
+from typing import List
+
 from ninja import Schema
 from pydantic import UUID4
 
@@ -13,3 +15,8 @@ class ReadEmail(Schema):
     name: str
     company__name: str
     company__compliment: str
+
+
+class ReadEmails(Schema):
+    count: int
+    emails: List[ReadEmail]

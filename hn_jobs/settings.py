@@ -232,3 +232,5 @@ if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 else:
     EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+
+API_TOKEN = env("API_TOKEN")

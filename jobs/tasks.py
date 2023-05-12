@@ -190,6 +190,10 @@ def create_valid_emails():
                 logger.info(f"Email for {post} already exists.")
                 continue
 
+            is_approved = False
+            if name != "" and name.lower() in email.split("@")[0].lower():
+                is_approved = True
+
             Email.objects.create(
                 email=email,
                 email_is_valid=email_is_valid,
@@ -197,5 +201,6 @@ def create_valid_emails():
                 name=name,
                 company=company,
                 post=post,
+                is_approved=is_approved,
             )
             logger.info(f"Email for {post} was created.")
