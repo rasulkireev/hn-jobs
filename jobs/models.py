@@ -1,7 +1,6 @@
 import uuid
 
 from autoslug import AutoSlugField
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from model_utils.models import TimeStampedModel
@@ -63,6 +62,17 @@ class Company(TimeStampedModel):
     company_homepage_link = models.URLField(blank=True)
     slug = AutoSlugField(populate_from="name", always_update=True)
     emails = models.TextField(blank=True)
+    compliment = models.TextField(blank=True)
+
+
+class Email(TimeStampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField(blank=True)
+    email_is_valid = models.BooleanField(default=False)
+    email_is_generic = models.BooleanField(default=True)
+    name = models.CharField(max_length=256)
+    company = models.ForeignKey("Company", related_name="email", on_delete=models.CASCADE)
+    post = models.ForeignKey("Post", related_name="email", on_delete=models.CASCADE)
 
 
 class PostTitle(TimeStampedModel):

@@ -1,0 +1,16 @@
+GENERIC_KEYWORDS = [
+    "jobs",
+    "apply",
+    "info",
+    "joinourteam" "admin",
+    "billing",
+    "contact",
+    "customerservice",
+    "help",
+    "marketing",
+    "media",
+    "newsletter",
+    "sales",
+    "support",
+    "webmaster",
+]

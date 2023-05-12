@@ -2,11 +2,10 @@ import logging
 
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.paginator import Paginator
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView
+from django.views.generic import FormView
 from django_filters.views import FilterView
-from django_q.tasks import async_task, result
+from django_q.tasks import async_task
 
 from hn_jobs.utils import add_users_context, floor_to_tens
 
@@ -66,6 +65,6 @@ class TriggerAsyncTask(LoginRequiredMixin, UserPassesTestMixin, FormView):
         return self.request.user.is_staff
 
     def form_valid(self, form):
-        who_is_hiring_post_id = form.cleaned_data.get("who_is_hiring_post_id")
+        who_is_hiring_post_id = form.cleaned_data.get("who_is_hiring_post_id")  # noqa: F841
         async_task(analyze_hn_page, who_is_hiring_post_id, hook="hooks.print_result")
         return super(TriggerAsyncTask, self).form_valid(form)

@@ -1,5 +1,8 @@
 import logging
+import re
 from datetime import datetime
+
+from .constants import GENERIC_KEYWORDS
 
 logger = logging.getLogger(__file__)
 
@@ -85,3 +88,48 @@ def make_sure_all_keys_exists(data: dict, keys: list) -> dict:
             data[key] = ""
 
     return data
+
+
+def fix_email(email):
+    """
+    Fixes common misspellings of email addresses and returns the corrected email.
+    """
+    email = email.lower()
+    email = (
+        re.sub(r"\s+at\s+", "@", email)
+        .replace(" [at] ", "@")
+        .replace("[at]", "@")
+        .replace(" at ", "@")
+        .replace("(at)", "@")
+        .replace("(a)", "@")
+        .replace("[@]", "@")
+        .replace("{@}", "@")
+        .replace("-at-", "@")
+        .replace(" at:", "@")
+        .replace("'at'", "@")
+        .replace("_at_", "@")
+        .replace(" dot ", ".")
+        .replace(" [dot] ", ".")
+        .replace("(dot)", ".")
+        .replace("[dot]", ".")
+        .replace(" dot:", ".")
+        .replace(" dot;", ".")
+        .replace("-dot-", ".")
+        .replace("_dot_", ".")
+        .replace("'dot'", ".")
+        .replace(";", ".")
+        .replace(",", ".")
+        .replace(" ", "")
+        .replace(":", ".")
+    )
+    return email
+
+
+def is_generic(email: str) -> bool:
+    """
+    Returns True if the email address is generic, False otherwise.
+    A generic email is defined as an email that has a generic local part
+    such as 'jobs', 'apply', etc.
+    """
+
+    return email.split("@")[0].lower() in GENERIC_KEYWORDS
