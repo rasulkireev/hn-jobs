@@ -5,9 +5,11 @@ import re
 import httpx
 import openai
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
-from .models import Company, Post, Technology, Title
-from .utils import clean_job_json_object
+from .models import Company, Email, Post, Technology, Title
+from .utils import clean_job_json_object, fix_email, is_generic
 
 logger = logging.getLogger(__file__)
 openai.api_key = settings.OPENAI_KEY
@@ -153,3 +155,52 @@ def analyze_hn_page(who_is_hiring_post_id):
 #     schedule_type=Schedule.CRON,
 #     cron = '0 0 * * *'
 # )
+
+
+def create_valid_emails():
+    posts_with_emails = Post.objects.exclude(emails="")
+
+    for post in posts_with_emails:
+        # Split the name and pair it with a name if one exists.
+        email_list = post.emails.split(",")
+        name_list = post.names_of_the_contact_person.split(",")
+
+        if len(email_list) == len(name_list):
+            email_name_pairs = zip(email_list, name_list)
+        else:
+            email_name_pairs = zip(email_list, [""] * len(email_list))
+
+        # Check that email is valid, and if not, try to fix it.
+        for email, name in email_name_pairs:
+            try:
+                validate_email(email)
+                email_is_valid = True
+            except ValidationError:
+                email_is_valid = False
+                email = fix_email(email)
+                try:
+                    validate_email(email)
+                    email_is_valid = True
+                except ValidationError:
+                    email_is_valid = False
+
+            company = post.company
+
+            if Email.objects.filter(post=post).exists():
+                logger.info(f"Email for {post} already exists.")
+                continue
+
+            is_approved = False
+            if name != "" and name.lower() in email.split("@")[0].lower():
+                is_approved = True
+
+            Email.objects.create(
+                email=email,
+                email_is_valid=email_is_valid,
+                email_is_generic=is_generic(email),
+                name=name,
+                company=company,
+                post=post,
+                is_approved=is_approved,
+            )
+            logger.info(f"Email for {post} was created.")
