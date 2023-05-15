@@ -61,7 +61,9 @@ def get_emails(
     if only_approved:
         emails = emails.filter(is_approved=True)
 
+    unique_emails = emails.objects.values("email").distinct()
+
     return {
-        "count": len(emails),
-        "emails": list(emails),
+        "count": len(unique_emails),
+        "emails": list(unique_emails),
     }
