@@ -37,4 +37,8 @@ GENERIC_KEYWORDS = [
     "hr",
     "recruiting+hn",
     "hi",
+    "team",
+    "growthlead",
+    "social",
+    "post",
 ]
