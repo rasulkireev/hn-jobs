@@ -61,9 +61,10 @@ def get_emails(
     if only_approved:
         emails = emails.filter(is_approved=True)
 
-    unique_emails = emails.objects.values("email").distinct()
+    unique_emails = emails.values("email").distinct()
+    unique_emails_queryset = emails.filter(email__in=unique_emails)
 
     return {
-        "count": len(unique_emails),
-        "emails": list(unique_emails),
+        "count": len(unique_emails_queryset),
+        "emails": list(unique_emails_queryset),
     }
