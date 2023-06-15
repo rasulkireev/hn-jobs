@@ -32,9 +32,6 @@
   {% stylesheet_pack 'index' %}
   {% javascript_pack 'index' attrs='defer' %}
 
-  <script defer data-domain="hnJobs.com" src="https://plausible.rasulkireev.com/js/script.js"></script>
-
-
 </head>
 <body>
   {% block default_messages %}
@@ -47,7 +44,7 @@
         <div class="flex items-center gap-x-12">
           <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
             <span class="sr-only">HN Jobs</span>
-            <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Jobs Logo">
+            <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Jobs Logo" />
           </a>
           <div class="hidden lg:flex lg:gap-x-12">
             <a href="{% url 'posts' %}" class="text-base font-semibold leading-6 text-gray-900">Jobs</a>
@@ -108,7 +105,6 @@
             </a>
           {% endif %}
 
-
         </div>
       </nav>
 
@@ -123,7 +119,7 @@
           <div class="flex items-center justify-between">
             <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
               <span class="sr-only">HN Jobs</span>
-              <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Jobs Logo">
+              <img class="w-auto h-8" src="{% static 'vendors/images/logo.png' %}" alt="HN Jobs Logo" />
             </a>
             <button data-action="dropdown#toggle click@window->dropdown#hide" type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
               <span class="sr-only">Close menu</span>
@@ -154,7 +150,7 @@
 
     <div class="px-2 sm:px-0">
       {% block content %}
-      {% endblock %}
+      {% endblock content %}
     </div>
 
   </div>

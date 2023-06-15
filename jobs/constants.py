@@ -41,4 +41,10 @@ GENERIC_KEYWORDS = [
     "growthlead",
     "social",
     "post",
+    "talentacquisition",
+    "jobs+hn",
+    "vehiclesoftwarerecruiting",
+    "founders",
+    "earninhiring",
+    "career",
 ]
