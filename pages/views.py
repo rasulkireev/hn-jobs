@@ -5,8 +5,9 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
 from django_q.tasks import async_task
 
-from hn_jobs.utils import add_users_context, floor_to_thousands
+from hn_jobs.utils import add_users_context
 from jobs.models import Post
+from jobs.queries import get_latest_submissions
 
 from .forms import SupportForm
 from .tasks import email_support_request
@@ -24,6 +25,7 @@ class HomeView(TemplateView):
         context["jobs"] = (
             Post.objects.exclude(description__isnull=True).exclude(description__exact="").order_by("-created")[:8]
         )
+        context["latest_companies"] = get_latest_submissions(20)
         context["num_of_jobs"] = len(Post.objects.all())
 
         if user.is_authenticated:

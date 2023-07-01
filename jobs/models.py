@@ -13,6 +13,7 @@ class Post(TimeStampedModel):
     who_is_hiring_title = models.CharField(max_length=25)
     who_is_hiring_comment_id = models.IntegerField()
     hn_username = models.CharField(max_length=50, blank=True)
+    submitted_datetime = models.DateTimeField()
 
     jobs = models.ManyToManyField("Title", related_name="post", blank=True, through="PostTitle")
     description = models.TextField(blank=True)
