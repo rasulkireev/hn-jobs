@@ -21,7 +21,7 @@ logger = logging.getLogger(__file__)
 class UserSettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     login_url = "account_login"
     model = CustomUser
-    fields = ["name"]
+    fields = ["name", "email"]
     success_message = "User Profile Updated"
     success_url = reverse_lazy("settings")
     template_name = "account/settings.html"

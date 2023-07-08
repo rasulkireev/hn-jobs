@@ -1,15 +1,8 @@
 from django import forms
-from django.db.models import Count, Q
-from django_filters import (
-    AllValuesMultipleFilter,
-    CharFilter,
-    FilterSet,
-    ModelMultipleChoiceFilter,
-    MultipleChoiceFilter,
-    NumberFilter,
-)
+from django_filters import AllValuesMultipleFilter, FilterSet, ModelMultipleChoiceFilter
 
-from .models import Post, Technology
+from .models import Post
+from .queries import get_most_popular_technologies
 
 
 class FrequencyOrderedAllValuesMultipleFilter(AllValuesMultipleFilter):
@@ -28,7 +21,7 @@ class FrequencyOrderedAllValuesMultipleFilter(AllValuesMultipleFilter):
 
 class PostFilter(FilterSet):
     # title = CharFilter(lookup_expr='icontains')
-    description = CharFilter(lookup_expr="icontains")
+    # description = CharFilter(lookup_expr="icontains")
 
     # # location = CharFilter(lookup_expr='icontains')
     # city = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
@@ -36,11 +29,9 @@ class PostFilter(FilterSet):
     # country = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
 
     # level = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
-    # technologies_used = ModelMultipleChoiceFilter(
-    #     queryset=Technology.objects.annotate(job_count=Count('job')).filter(job_count__gt=10).order_by('-job_count'),
-    #     widget=forms.CheckboxSelectMultiple(),
-    #     conjoined=True
-    # )
+    technologies = ModelMultipleChoiceFilter(
+        queryset=get_most_popular_technologies(), widget=forms.CheckboxSelectMultiple(), conjoined=True
+    )
     # who_is_hiring_title = AllValuesMultipleFilter(widget=forms.CheckboxSelectMultiple)
 
     # years_of_experience = NumberFilter()
@@ -57,18 +48,20 @@ class PostFilter(FilterSet):
     #     ("Part-time Employee", "Part-time Employee"),
     #     ("Full-time Employee", "Full-time Employee"),
     # ]
-    # capacity = MultipleChoiceFilter(choices=CAPACITY_CHOICES, widget=forms.CheckboxSelectMultiple, lookup_expr="icontains")
+    # capacity = MultipleChoiceFilter(
+    #   choices=CAPACITY_CHOICES, widget=forms.CheckboxSelectMultiple, lookup_expr="icontains"
+    # )
 
     class Meta:
         model = Post
         fields = [
             # "title",
-            "description",
+            # "description",
             # "level",
             # "is_remote",
             # "willing_to_relocate",
             # "years_of_experience",
-            # "technologies_used",
+            "technologies",
             # "who_is_hiring_title",
             # "location",
             # "city",
