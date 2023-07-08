@@ -44,6 +44,10 @@ class Post(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("job", kwargs={"pk": self.id})
 
+    def split_application_links(self):
+        links = self.company_job_application_link.split(",")
+        return [link.strip() for link in links]
+
 
 class Technology(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

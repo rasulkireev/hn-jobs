@@ -203,11 +203,20 @@ LOGGING = {
 # django-q
 Q_CLUSTER = {
     "name": "hn_jobs-q",
-    "orm": "default",
     "timeout": 90,
     "retry": 120,
     "workers": 4,
     "max_attempts": 2,
+    "redis": {
+        "host": "localhost",
+        "port": 6380,
+        "db": 0,
+        "password": None,
+        "socket_timeout": None,
+        "charset": "utf-8",
+        "errors": "strict",
+        "unix_socket_path": None,
+    },
 }
 
 OPENAI_KEY = env("OPENAI_KEY")
@@ -227,10 +236,15 @@ DEFAULT_FROM_EMAIL = "rasul@hn-jobs.com"
 SERVER_EMAIL = "error@hn-jobs.com"
 
 if DEBUG:
-    EMAIL_HOST = "localhost"
-    EMAIL_PORT = 1025
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
     EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 
 API_TOKEN = env("API_TOKEN")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("REDIS_URL"),
+    }
+}
