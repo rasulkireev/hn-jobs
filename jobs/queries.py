@@ -8,8 +8,14 @@ def get_latest_submissions(number_of: int, for_homepage: bool = False):
     posts = Post.objects.annotate(latest_datetime=Max("submitted_datetime")).order_by("-latest_datetime")
 
     if for_homepage:
-        posts = posts.annotate(num_technologies=Count("technologies"), num_jobs=Count("jobs")).filter(
-            num_technologies__gt=0, num_jobs__gt=0
+        excluded_tech = Technology.objects.filter(name__in=EXCLUDED_TECHNOLOGIES)
+        excluded_titles = Title.objects.filter(name__in=EXCLUDED_TITLES)
+
+        posts = (
+            posts.annotate(num_technologies=Count("technologies"), num_jobs=Count("jobs"))
+            .exclude(technologies__in=excluded_tech)
+            .exclude(jobs__in=excluded_titles)
+            .filter(num_technologies__gt=0, num_jobs__gt=0)
         )
 
     if number_of > 0:

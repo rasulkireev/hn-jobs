@@ -8,7 +8,6 @@ from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 from django_q.tasks import async_task
 
 from hn_jobs.utils import add_users_context
-from jobs.models import Post
 from jobs.queries import get_latest_submissions, get_most_popular_technologies, get_most_popular_titles
 from users.models import Subscriber
 
@@ -25,13 +24,9 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        context["jobs"] = (
-            Post.objects.exclude(description__isnull=True).exclude(description__exact="").order_by("-created")[:8]
-        )
         context["latest_job_submissions"] = get_latest_submissions(9, for_homepage=True)
         context["popular_titles"] = get_most_popular_titles()
         context["popular_technologies"] = get_most_popular_technologies(min_count=2)
-        context["num_of_jobs"] = len(Post.objects.all())
         context["create_alert_form"] = CreateAlertForm
 
         if user.is_authenticated:

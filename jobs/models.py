@@ -54,11 +54,17 @@ class Technology(TimeStampedModel):
     name = models.CharField(max_length=256)
     slug = AutoSlugField(populate_from="name", always_update=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Title(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
     slug = AutoSlugField(populate_from="name", always_update=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Company(TimeStampedModel):
@@ -68,6 +74,16 @@ class Company(TimeStampedModel):
     slug = AutoSlugField(populate_from="name", always_update=True)
     emails = models.TextField(blank=True)
     compliment = models.TextField(blank=True)
+
+    @property
+    def fixed_company_homepage_link(self):
+        if not self.company_homepage_link.startswith("http"):
+            self.company_homepage_link = "https://" + self.company_homepage_link
+
+        return self.company_homepage_link
+
+    def __str__(self):
+        return self.name
 
 
 class Email(TimeStampedModel):

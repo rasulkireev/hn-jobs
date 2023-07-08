@@ -58,10 +58,11 @@
 </div>
 
 <div class="mx-auto mt-16 overflow-hidden sm:mt-24 max-w-7xl">
-  <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <h2 class="mb-2 text-2xl font-semibold leading-6 text-center text-gray-900">Companies looking for employers...</h2>
+  <ul role="list" class="grid grid-cols-1 gap-6 py-2 sm:grid-cols-2 lg:grid-cols-3">
     {% for object in latest_job_submissions %}
     {% if object.technologies.all.count > 0 or object.jobs.all.count > 0 %}
-      <li class="col-span-1 bg-white border border-gray-100 divide-y divide-gray-200 rounded-lg shadow">
+      <li class="col-span-1 bg-white border border-gray-100 divide-y divide-gray-200 rounded-lg shadow hover:bg-gray-50">
           <div class="flex items-center justify-between w-full p-6 space-x-6">
             <div class="flex-1 truncate">
               <div class="flex items-center space-x-3">
@@ -69,7 +70,7 @@
                   {{ object.company.name }}
                 </h3>
                 {% if object.company.company_homepage_link %}
-                <a href="{{ object.company.company_homepage_link }}" target="_blank">
+                <a href="{{ object.company.fixed_company_homepage_link }}" target="_blank">
                   <img class="w-4 h-4" src="{% static 'vendors/images/external_link.svg' %}" alt="External Link" />
                 </a>
                 {% endif %}
